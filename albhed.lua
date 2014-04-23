@@ -25,27 +25,36 @@ function getCharacterInAlphabet(charIndex, alphabet)
 	return alphabet[charIndex] or '';
 end
 
-function convertToAlbhed(text)
-	local albhedTranslation = '';
+function convertTo(text, oldAlphabet, newAlphabet)
+	local textTranslation = '';
 	
 	for charIndex = 1, string.len(text) do
-		local latinChar = string.sub(text, charIndex, charIndex);
-		local latinCharIndex = getCharacterIndexInAlphabet(string.lower(latinChar), latinAlphabet);
-		local albhedChar = getCharacterInAlphabet(latinCharIndex, albhedAlphabet);
+		local oldChar = string.sub(text, charIndex, charIndex);
+		local oldCharIndex = getCharacterIndexInAlphabet(string.lower(oldChar), oldAlphabet);
+		local newChar = getCharacterInAlphabet(oldCharIndex, newAlphabet);
 		
-		if (albhedChar == '') then
-			albhedChar = latinChar;
+		if (newChar == '') then
+			newChar = oldChar;
 		end
 		
-		if (isCharacterUppercase(latinChar)) then
-			albhedChar = string.upper(albhedChar);
+		if (isCharacterUppercase(oldChar)) then
+			newChar = string.upper(newChar);
 		end
 		
-		albhedTranslation = albhedTranslation .. albhedChar;
+		textTranslation = textTranslation .. newChar;
 	end
 	
-	return albhedTranslation;
+	return textTranslation;
 end
 
-local text = 'Acide mon gars !';
+function convertToAlbhed(text)
+	return convertTo(text, latinAlphabet, albhedAlphabet);
+end
+
+function convertToLatin(text)
+	return convertTo(text, albhedAlphabet, latinAlphabet);
+end
+
+local text = 'Hello world !';
 print(convertToAlbhed(text));
+
