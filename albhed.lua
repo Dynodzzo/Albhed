@@ -6,6 +6,8 @@ local albhedAlphabet = {
 	'y', 'p', 'l', 't', 'a', 'v', 'k', 'r', 'e', 'z', 'g', 'm', 's',
 	'h', 'u', 'b', 'x', 'n', 'c', 'd', 'i', 'j', 'f', 'q', 'o', 'w',
 };
+local startEscapeChars = '[';
+local endEscapeChars = ']';
 
 function isCharacterUppercase(character)
 	return character == string.upper(character);
@@ -26,21 +28,34 @@ function getCharacterInAlphabet(charIndex, alphabet)
 end
 
 function convertTo(text, oldAlphabet, newAlphabet)
+	local doesIgnoreChars = false;
 	local textTranslation = '';
 	
 	for charIndex = 1, string.len(text) do
 		local oldChar = string.sub(text, charIndex, charIndex);
 		local oldCharIndex = getCharacterIndexInAlphabet(string.lower(oldChar), oldAlphabet);
-		local newChar = getCharacterInAlphabet(oldCharIndex, newAlphabet);
-		
-		if (newChar == '') then
+		local newChar = '';
+
+		if (oldChar == startEscapeChars) then
+			doesIgnoreChars = true;
+		elseif (oldChar == endEscapeChars) then
+			doesIgnoreChars = false;
+		end
+
+		if (doesIgnoreChars) then
 			newChar = oldChar;
+		else
+			newChar = getCharacterInAlphabet(oldCharIndex, newAlphabet);
+			
+			if (newChar == '') then
+				newChar = oldChar;
+			end
+			
+			if (isCharacterUppercase(oldChar)) then
+				newChar = string.upper(newChar);
+			end
 		end
-		
-		if (isCharacterUppercase(oldChar)) then
-			newChar = string.upper(newChar);
-		end
-		
+
 		textTranslation = textTranslation .. newChar;
 	end
 	
@@ -55,6 +70,6 @@ function convertToLatin(text)
 	return convertTo(text, albhedAlphabet, latinAlphabet);
 end
 
-local text = 'Hello world !';
+local text = 'Hello world, [niggaaaaaz] !';
 print(convertToAlbhed(text));
 
