@@ -27,6 +27,14 @@ function getCharacterInAlphabet(charIndex, alphabet)
 	return alphabet[charIndex] or '';
 end
 
+function escapingCharsFound(char)
+	if (char == startEscapeChars) then
+		doesIgnoreChars = true;
+	elseif (char == endEscapeChars) then
+		doesIgnoreChars = false;
+	end
+end
+
 function convertTo(text, oldAlphabet, newAlphabet)
 	local doesIgnoreChars = false;
 	local textTranslation = '';
@@ -36,11 +44,7 @@ function convertTo(text, oldAlphabet, newAlphabet)
 		local oldCharIndex = getCharacterIndexInAlphabet(string.lower(oldChar), oldAlphabet);
 		local newChar = '';
 
-		if (oldChar == startEscapeChars) then
-			doesIgnoreChars = true;
-		elseif (oldChar == endEscapeChars) then
-			doesIgnoreChars = false;
-		end
+		doesIgnoreChars = escapingCharsFound(oldChar);
 
 		if (doesIgnoreChars) then
 			newChar = oldChar;
