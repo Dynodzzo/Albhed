@@ -6,11 +6,11 @@ local albhedAlphabet = {
 	'y', 'p', 'l', 't', 'a', 'v', 'k', 'r', 'e', 'z', 'g', 'm', 's',
 	'h', 'u', 'b', 'x', 'n', 'c', 'd', 'i', 'j', 'f', 'q', 'o', 'w',
 };
-local startEscapeChars = '[';
-local endEscapeChars = ']';
+local startEscapeChar = '[';
+local endEscapeChar = ']';
 
 function isCharacterUppercase(character)
-	return character == string.upper(character);
+	return string.find(character, '^%u') ~= nil;
 end
 
 function getCharacterIndexInAlphabet(character, alphabet)
@@ -27,33 +27,26 @@ function getCharacterInAlphabet(charIndex, alphabet)
 	return alphabet[charIndex] or '';
 end
 
-function escapingCharsFound(char)
-	if (char == startEscapeChars) then
-		doesIgnoreChars = true;
-	elseif (char == endEscapeChars) then
-		doesIgnoreChars = false;
-	end
-end
-
 function convertTo(text, oldAlphabet, newAlphabet)
-	local doesIgnoreChars = false;
 	local textTranslation = '';
+	local doesEscapeChars = false;
 	
 	for charIndex = 1, string.len(text) do
 		local oldChar = string.sub(text, charIndex, charIndex);
 		local oldCharIndex = getCharacterIndexInAlphabet(string.lower(oldChar), oldAlphabet);
 		local newChar = '';
+		
+		if (oldChar == startEscapeChar) then
+			doesEscapeChars =  true;
+		elseif (oldChar == endEscapeChar) then
+			doesEscapeChars = false;
+		end
 
-		doesIgnoreChars = escapingCharsFound(oldChar);
-
-		if (doesIgnoreChars) then
+		if (doesEscapeChars) then
 			newChar = oldChar;
 		else
 			newChar = getCharacterInAlphabet(oldCharIndex, newAlphabet);
-			
-			if (newChar == '') then
-				newChar = oldChar;
-			end
+			newChar = (newChar == '') and oldChar or newChar;
 			
 			if (isCharacterUppercase(oldChar)) then
 				newChar = string.upper(newChar);
