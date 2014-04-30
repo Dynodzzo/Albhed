@@ -3,5 +3,10 @@ App.Class = require('lib.30log');
 -- Loads the Http socket
 App.Http = require('socket.http');
 
+require('app.utils');
+require('app.easing');
+
 -- Loading classes.
+require('app.uiobject');
+require('app.textbox');
 require('app.translator');
