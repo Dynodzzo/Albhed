@@ -17,23 +17,26 @@ local albhedPhoneticsAlphabet = {
 function love.load()
 	require('app.init');
 	
-	App.tbxUntranslatedText = App.TextBox:new(50, 50);
+	love.keyboard.setKeyRepeat(true);
 	
-	local translator = App.Translator:new();
-	translator:addAlphabet('latin', latinAlphabet);
-	translator:addAlphabet('albhed', albhedAlphabet);
-	translator:addAlphabet('albhedPho', albhedPhoneticsAlphabet);
-	local albhedText = translator:convertTo('Hello', 'latin', 'albhed');
-	-- albhedText = string.format();
-	local data = App.Http.request(GoogleTTSBaseUrl .. albhedText);
+	App.lblUntranslatedText = App.Label:new('Input text', 50, 50);
+	App.lblTranslatedText = App.Label:new('Al Bhed', 50, 90);
 	
-	if (data) then
-		-- love.filesystem.write('test.mp3', data);
-	end
+	App.tbxUntranslatedText = App.TextBox:new(150, 50);
+	App.btnTranslateText = App.Button:new('Translate', 50, 120);
+	App.btnTranslateText.clickEvent = btnTranslateClick;
+	
+	App.translator = App.Translator:new();
+	App.translator:addAlphabet('latin', latinAlphabet);
+	App.translator:addAlphabet('albhed', albhedAlphabet);
+	App.translator:addAlphabet('albhedPho', albhedPhoneticsAlphabet);
 end
 
 function love.draw()
+	App.lblUntranslatedText:draw();
+	App.lblTranslatedText:draw();
 	App.tbxUntranslatedText:draw();
+	App.btnTranslateText:draw();
 end
 
 function love.update(dt)
@@ -46,7 +49,36 @@ function love.keypressed(key)
 	end
 end
 
+function love.mousepressed(x, y, button)
+	App.btnTranslateText:mousepressed(x, y, button);
+end
+
 function love.textinput(text)
 	App.tbxUntranslatedText:append(text);
+end
+
+function btnTranslateClick()
+	local untranslatedText = App.tbxUntranslatedText:getText();
+	local albhedText = App.translator:convertTo(untranslatedText, 'latin', 'albhed');
+	App.lblTranslatedText:setText(albhedText);
+	albhedText = string.gsub(albhedText, ' ', '%%20');
+	
+	local data, serverResponse = App.Http.request(GoogleTTSBaseUrl .. albhedText);
+	local soundData = 0;
+	local audio = 0;
+	
+	print(serverResponse, type(serverResponse));
+	
+	if (data and serverResponse == 200) then
+		love.filesystem.write('test.mp3', data);
+		local doesSoundExists = love.filesystem.exists('test.mp3');
+		love.graphics.setColor(App.Color.white);
+		
+		if (doesSoundExists) then
+			soundData = love.sound.newSoundData('test.mp3');
+			audio = love.audio.newSource(soundData);
+			audio:play();
+		end
+	end
 end
 

@@ -8,5 +8,7 @@ require('app.easing');
 
 -- Loading classes.
 require('app.uiobject');
+require('app.label');
 require('app.textbox');
+require('app.button');
 require('app.translator');

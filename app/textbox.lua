@@ -42,6 +42,10 @@ function App.TextBox:getFontSize()
 	return self.font:getWidth(), self.font:getHeight();
 end
 
+function App.TextBox:getText()
+	return self.text;
+end
+
 function App.TextBox:append(text)
 	self.text = self.text .. text;
 	self:updateCaret();
@@ -59,10 +63,10 @@ end
 
 function App.TextBox:update(dt)
 	if (not self.caretBlinkWay) then
-		self.caretColor[4] = App.Easing:outSine(self.caretStartAlpha, self.caretAmplitude, self.caretOldDt, self.caretAnimDuration);
+		self.caretColor[4] = App.Easing:outQuint(self.caretStartAlpha, self.caretAmplitude, self.caretOldDt, self.caretAnimDuration);
 		self.caretOldDt = self.caretOldDt+ dt;
 	else
-		self.caretColor[4] = App.Easing:outQuint(self.caretStartAlpha, -self.caretAmplitude, self.caretOldDt, self.caretAnimDuration);
+		self.caretColor[4] = App.Easing:outSine(self.caretStartAlpha, -self.caretAmplitude, self.caretOldDt, self.caretAnimDuration);
 		self.caretOldDt = self.caretOldDt+ dt;
 	end
 	

@@ -50,9 +50,9 @@ function App.Translator:getAlbhedPhonetics(text, oldAlphabetName)
 		local oldCharIndex = self:getCharacterIndexInAlphabet(oldChar, oldAlphabetName);
 		local phoneticsChar = '';
 		
-		if (oldChar == startEscapeChar) then
+		if (oldChar == self.startEscapeChar) then
 			doesEscapeChars =  true;
-		elseif (oldChar == endEscapeChar) then
+		elseif (oldChar == self.endEscapeChar) then
 			doesEscapeChars = false;
 		end
 		
@@ -95,9 +95,9 @@ function App.Translator:convertTo(text, oldAlphabetName, newAlphabetName, withPh
 		local oldCharIndex = self:getCharacterIndexInAlphabet(oldChar, oldAlphabetName);
 		local newChar = '';
 		
-		if (oldChar == startEscapeChar) then
+		if (oldChar == self.startEscapeChar) then
 			doesEscapeChars =  true;
-		elseif (oldChar == endEscapeChar) then
+		elseif (oldChar == self.endEscapeChar) then
 			doesEscapeChars = false;
 		end
 
